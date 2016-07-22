@@ -39,20 +39,24 @@
       FB.login(function(response) {
         if (response.status === 'connected') {
           document.getElementById('status').innerHTML = 'We are connected.';
+          getInfo();
         } else if (response.status === 'not_authorized') {
           document.getElementById('status').innerHTML = 'We are not logged in.'
         } else {
           document.getElementById('status').innerHTML = 'You are not logged into Facebook.';
         }
-      }, {scope: 'email'});
+      }, {scope: 'email,user_birthday'});
     }
 
     // getting basic user info
     function getInfo() {
-      FB.api('/me', 'GET', {fields: 'first_name,last_name,name,email,id'}, function(response) {
+      FB.api('/me', 'GET', {fields: 'first_name,gender,birthday,picture.width(100).height(100),last_name,name,email,id'}, function(response) {
+        document.getElementById('photo').innerHTML = '<img src="' + response.picture.data.url + '">';
+        document.getElementById('full_name').innerHTML = response.name;
         document.getElementById('first_name').innerHTML = response.first_name;
         document.getElementById('last_name').innerHTML = response.last_name;
-        document.getElementById('full_name').innerHTML = response.name;
+        document.getElementById('birthday').innerHTML = response.birthday;
+        document.getElementById('gender').innerHTML = response.gender;
         document.getElementById('email').innerHTML = response.email;
         document.getElementById('id').innerHTML = response.id;
       });
@@ -60,12 +64,19 @@
   </script>
 
   <div class="wrapper">
-    <a onclick="login()" href="#" class="icon-facebook"></a>
-    <a onclick="getInfo()" href="#" id="get-info">Get info</a>
-    <table>
+    <a onclick="login()" class="facebook" href="#"><img src="img/facebook.png" /></a>
+    <table class="info">
       <tr>
         <td>Status:</td>
         <td id="status"></td>
+      </tr>
+      <tr>
+        <td>Photo:</td>
+        <td id="photo"></td>
+      </tr>
+      <tr>
+        <td>Full Name:</td>
+        <td id="full_name"></td>
       </tr>
       <tr>
         <td>First Name:</td>
@@ -76,8 +87,12 @@
         <td id="last_name"></td>
       </tr>
       <tr>
-        <td>Full Name:</td>
-        <td id="full_name"></td>
+        <td>Birthday:</td>
+        <td id="birthday"></td>
+      </tr>
+      <tr>
+        <td>Gender:</td>
+        <td id="gender"></td>
       </tr>
       <tr>
         <td>Email:</td>
